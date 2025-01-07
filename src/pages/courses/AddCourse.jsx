@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCourse } from '../../redux/features/course/courseSlice';
-import { fetchSubjects } from '../../redux/features/subject/subjectSlice'; // Add the fetchSubjects import
+import { fetchSubjects } from '../../redux/features/subject/subjectSlice';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -10,12 +10,13 @@ const AddCourse = () => {
 
   // Fetch subjects from Redux store
   const { subjects, loading: subjectsLoading, error: subjectsError } = useSelector((state) => state.subjects);
-  
+
   // Initialize course form state
   const [formData, setFormData] = useState({
     name: '',
     courseType: 'online',
     subjectIds: [],
+    courseFee: '', // Add courseFee to the initial state
   });
 
   useEffect(() => {
@@ -43,9 +44,10 @@ const AddCourse = () => {
     try {
       await dispatch(createCourse(formData)).unwrap();
       toast.success('Course created successfully!');
-      setFormData({ name: '', courseType: 'online', subjectIds: [] });
+      setFormData({ name: '', courseType: 'online', subjectIds: [], courseFee: '' }); // Reset form
     } catch (error) {
-      toast.error(error?.message || 'Failed to create course. Please try again.');
+      const errorMessage = error?.message || 'Failed to create course. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -55,7 +57,11 @@ const AddCourse = () => {
   }
 
   if (subjectsError) {
-    return <div>Error loading subjects: {subjectsError}</div>;
+    return (
+      <div>
+        Error loading subjects: {subjectsError.message || JSON.stringify(subjectsError)}
+      </div>
+    );
   }
 
   return (
@@ -77,7 +83,8 @@ const AddCourse = () => {
         onSubmit={handleSubmit}
         className="container mx-auto flex flex-col items-center px-20 py-custom bg-white max-w-full max-md:px-5 max-md:pt-24"
       >
-        <div className="mb-4 mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+        {/* Course Name */}
+        <div className="mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
           <label className="block text-sm font-bold mb-2" htmlFor="name">
             Course Name
           </label>
@@ -92,7 +99,24 @@ const AddCourse = () => {
           />
         </div>
 
-        <div className="mb-4 mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+        {/* Course Fee */}
+        <div className="mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+          <label className="block text-sm font-bold mb-2" htmlFor="courseFee">
+            Course Fee
+          </label>
+          <input
+            id="courseFee"
+            name="courseFee"
+            type="number"
+            value={formData.courseFee}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+
+        {/* Course Type */}
+        <div className="mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
           <label className="block text-sm font-bold mb-2">Course Type</label>
           <select
             name="courseType"
@@ -109,22 +133,27 @@ const AddCourse = () => {
           </select>
         </div>
 
-        <div className="mb-4 mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+        {/* Subjects */}
+        <div className="mb-4 flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
           <label className="block text-sm font-bold mb-2">Subjects</label>
           {subjects && subjects.length > 0 ? (
-            subjects.map((subject) => (
-              <div key={subject._id}>
-                <input
-                  type="checkbox"
-                  id={subject._id}
-                  checked={formData.subjectIds.includes(subject._id)}
-                  onChange={() => handleCheckboxChange(subject._id)}
-                />
-                <label htmlFor={subject._id} className="ml-2">
-                  {subject.name}
-                </label>
-              </div>
-            ))
+            subjects.map((subject) =>
+              subject?._id && subject?.name ? (
+                <div key={subject._id}>
+                  <input
+                    type="checkbox"
+                    id={subject._id}
+                    checked={formData.subjectIds.includes(subject._id)}
+                    onChange={() => handleCheckboxChange(subject._id)}
+                  />
+                  <label htmlFor={subject._id} className="ml-2">
+                    {subject.name}
+                  </label>
+                </div>
+              ) : (
+                <div key={subject._id || Math.random()}>Invalid subject data</div>
+              )
+            )
           ) : (
             <p>No subjects available</p>
           )}

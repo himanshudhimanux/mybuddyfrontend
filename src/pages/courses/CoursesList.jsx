@@ -37,6 +37,11 @@ const CoursesList = () => {
       sortable: true,
     },
     {
+      name: 'Course Fee',
+      selector: (row) => row.courseFee,
+      sortable: true,
+    },
+    {
       name: 'Subjects',
       selector: (row) =>
         row.subjectIds && row.subjectIds.length > 0
