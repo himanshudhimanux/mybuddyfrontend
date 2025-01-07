@@ -1,78 +1,126 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../utils/api'; // Assuming api.js is configured with the base URL and interceptors
+import api from '../../../utils/api';
 
-// Async actions for API calls
-export const fetchBatches = createAsyncThunk('batch/fetchBatches', async (_, thunkAPI) => {
-  try {
-    const response = await api.get('/batches');
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
+// Async thunks for fetching session, location, and course
+export const fetchSessions = createAsyncThunk('batches/fetchSessions', async () => {
+  const response = await api.get('/session-years');
+  return response.data;
 });
 
-export const createBatch = createAsyncThunk('batch/createBatch', async (batchData, thunkAPI) => {
-  try {
-    const response = await api.post('/create-batch', batchData);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
+export const fetchLocations = createAsyncThunk('batches/fetchLocations', async () => {
+  const response = await api.get('/locations');
+  return response.data;
 });
 
-export const updateBatch = createAsyncThunk('batch/updateBatch', async ({ id, updates }, thunkAPI) => {
-  try {
-    const response = await api.put(`/update-batch/${id}`, updates);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
+export const fetchCourses = createAsyncThunk('batches/fetchCourses', async () => {
+  const response = await api.get('/courses');
+  return response.data;
 });
 
-export const deleteBatch = createAsyncThunk('batch/deleteBatch', async ({ id, deletedBy }, thunkAPI) => {
-  try {
-    const response = await api.delete(`/delete-batch/${id}`, { data: { deletedBy } });
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
+// Async thunk for fetching batches
+export const fetchBatches = createAsyncThunk('batches/fetchBatches', async () => {
+  const response = await api.get('/batches');
+  return response.data;
 });
 
-// Batch Slice
+// Async thunk for batch creation and deletion
+export const createBatch = createAsyncThunk('batches/createBatch', async (batchData) => {
+  const response = await api.post('/create-batch', batchData);
+  return response.data;
+});
+
+export const deleteBatch = createAsyncThunk('batches/deleteBatch', async (batchId) => {
+  await api.delete(`/delete-batch/${batchId}`);
+  return batchId;
+});
+
+// Slice
 const batchSlice = createSlice({
-  name: 'batch',
+  name: 'batches',
   initialState: {
     batches: [],
-    status: 'idle',
+    loading: false,
     error: null,
+    sessions: [],
+    locations: [],
+    courses: [],
+    sessionYear: null,
+    locationId: null,
+    courseId: null,
+    batchName: '',
   },
-  reducers: {},
+  reducers: {
+    setSessionYear: (state, action) => {
+      state.sessionYear = action.payload;
+    },
+    setLocationId: (state, action) => {
+      state.locationId = action.payload;
+    },
+    setCourseId: (state, action) => {
+      state.courseId = action.payload;
+    },
+    setBatchName: (state, action) => {
+      state.batchName = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchSessions.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSessions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sessions = action.payload;
+      })
+      .addCase(fetchSessions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(fetchLocations.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchLocations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.locations = action.payload;
+      })
+      .addCase(fetchLocations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(fetchCourses.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCourses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.courses = action.payload;
+      })
+      .addCase(fetchCourses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
       .addCase(fetchBatches.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
       })
       .addCase(fetchBatches.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.loading = false;
         state.batches = action.payload;
       })
       .addCase(fetchBatches.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        state.loading = false;
+        state.error = action.error.message;
       })
+
       .addCase(createBatch.fulfilled, (state, action) => {
         state.batches.push(action.payload.batch);
       })
-      .addCase(updateBatch.fulfilled, (state, action) => {
-        const index = state.batches.findIndex((batch) => batch._id === action.payload.batch._id);
-        if (index !== -1) {
-          state.batches[index] = action.payload.batch;
-        }
-      })
       .addCase(deleteBatch.fulfilled, (state, action) => {
-        state.batches = state.batches.filter((batch) => batch._id !== action.payload.batch._id);
+        state.batches = state.batches.filter((batch) => batch._id !== action.payload);
       });
   },
 });
 
+export const { setSessionYear, setLocationId, setCourseId, setBatchName } = batchSlice.actions;
 export default batchSlice.reducer;

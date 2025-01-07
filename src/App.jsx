@@ -27,7 +27,7 @@ import ClassSessionList from './pages/classSession/ClassSessionsList';
 import AddSessionYear from './pages/sessionYear/AddSessionYear';
 import SessionYearsList from './pages/sessionYear/SessionYearsList'
 import AddBatchStudent from './pages/batchStudent/AddBatchStudent'
-import BatchStudentList from './pages/batchStudent/BatchStudentsList';
+import BatchStudentsList from './pages/batchStudent/BatchStudentsList';
 import AddSubject from './pages/subjects/AddSubject';
 import SubjectsList from './pages/subjects/SubjectsList';
 
@@ -226,7 +226,7 @@ function App() {
               path="/batch-students/list"
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
-                  <BatchStudentList />
+                  <BatchStudentsList />
                 </ProtectedRoute>
               }
               
