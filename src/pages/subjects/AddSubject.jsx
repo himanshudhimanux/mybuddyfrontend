@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTeachers } from '../../redux/features/teacher/teacherSlice';  // Adjust the path as needed
+import { fetchTeachers } from '../../redux/features/teacher/teacherSlice';  
 import { createSubject } from '../../redux/features/subject/subjectSlice';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ const AddSubject = () => {
   // Fetch teachers on component mount
   useEffect(() => {
     if (teachers.length === 0) {
-      dispatch(fetchTeachers({ page: 1, limit: 10, search: '' }));  // Adjust params as needed
+      dispatch(fetchTeachers({ page: 1, limit: 10, search: '' })); 
     }
   }, [dispatch, teachers]);
 
