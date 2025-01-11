@@ -52,7 +52,7 @@ const BatchList = () => {
       </div>
 
       <div className="p-5">
-        
+
         {loading ? (
           <p>Loading...</p>
         ) : error ? (

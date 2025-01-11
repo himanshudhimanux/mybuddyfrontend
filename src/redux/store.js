@@ -12,6 +12,7 @@ import locationReducer from '../redux/features/location/locationSlice';
 import batchReducer from '../redux/features/batch/batchSlice'
 import sessionYearReducer from '../redux/features/sessionYear/sessionYearSlice'
 import batchStudentReducer from '../redux/features/batchStudent/batchStudentSlice'
+import classSessionReducer from '../redux/features/classSession/classSessionSlice'
 
 
 
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   courses: courseReducer,
   locations: locationReducer,
   batches: batchReducer,
-  batchStudent:batchStudentReducer
+  batchStudent:batchStudentReducer,
+  classSession: classSessionReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -30,6 +30,7 @@ import AddBatchStudent from './pages/batchStudent/AddBatchStudent'
 import BatchStudentsList from './pages/batchStudent/BatchStudentsList';
 import AddSubject from './pages/subjects/AddSubject';
 import SubjectsList from './pages/subjects/SubjectsList';
+import UpdateClassSession from './pages/classSession/UpdateClassSession'
 
 
 function App() {
@@ -247,6 +248,16 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <ClassSessionList />
+                </ProtectedRoute>
+              }
+              
+            />
+
+            <Route
+              path="/class-session/update"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <UpdateClassSession />
                 </ProtectedRoute>
               }
               

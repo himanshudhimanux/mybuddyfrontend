@@ -28,11 +28,12 @@ const AddBatchStudent = () => {
     try {
       const response = await api.get("/batches");
   
-      // Debugging: Log response to check what is being returned
+      // Debugging: Log response to ensure correct structure
       console.log("Batches API Response:", response);
   
-      if (response.data && response.data.data) {
-        setBatches(response.data.data); // Update batches state with data
+      // Update batches state with the response data array
+      if (Array.isArray(response.data)) {
+        setBatches(response.data);
       } else {
         console.error("Unexpected API response format:", response);
         toast.error("Failed to load batches: Unexpected API response.");
@@ -42,6 +43,7 @@ const AddBatchStudent = () => {
       toast.error("Failed to load batches");
     }
   };
+  
   
 
   // Fetch Students by Search Query
@@ -87,11 +89,9 @@ const AddBatchStudent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.studentId || !formData.batchId || !formData.payableFees || !formData.joiningDate) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
+  
+    console.log("Submitting Payload:", formData); // Debugging the form data
+  
     try {
       await dispatch(createBatchStudent(formData)).unwrap();
       toast.success("Batch Student added successfully!");
@@ -105,11 +105,12 @@ const AddBatchStudent = () => {
         discountComment: "",
         installmentType: "",
       });
-      setSearchQuery("");
     } catch (error) {
+      console.error("Error creating batch student:", error); // Log error details
       toast.error(error.message || "Failed to add Batch Student");
     }
   };
+  
 
   return (
     <>
