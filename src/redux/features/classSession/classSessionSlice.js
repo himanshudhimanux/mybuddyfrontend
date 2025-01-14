@@ -5,13 +5,13 @@ import api from "../../../utils/api";
 // Async actions
 export const fetchClassSessions = createAsyncThunk(
   "classSession/fetchClassSessions",
-  async (params, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/class-sessions`, { params });
+      const response = await api.get(`/class-sessions`);
       return response.data;
     } catch (error) {
       toast.error("Failed to fetch sessions");
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || "Error fetching sessions");
     }
   }
 );
@@ -75,8 +75,8 @@ const classSessionSlice = createSlice({
       })
       .addCase(fetchClassSessions.fulfilled, (state, action) => {
         state.loading = false;
-        state.sessions = action.payload.data;
-        state.total = action.payload.total;
+        state.sessions = action.payload?.data || [];
+        state.total = action.payload?.total || 0;
       })
       .addCase(fetchClassSessions.rejected, (state, action) => {
         state.loading = false;

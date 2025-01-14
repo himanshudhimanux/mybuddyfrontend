@@ -46,15 +46,17 @@ const AddSessionYear = () => {
         </div>
       </div>
 
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Add Session Year</h1>
+      <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <form onSubmit={handleSubmit} className="space-y-4">
+
+      
+
           <div>
             <label className="block">Year Name</label>
             <input
               type="text"
               className="border p-2 w-full"
-              placeholder="Enter year name"
+              placeholder="Enter year e.g 2025"
               value={yearName}
               onChange={(e) => setYearName(e.target.value)}
             />
@@ -70,7 +72,7 @@ const AddSessionYear = () => {
               Default Year
             </label>
           </div>
-          <button type="submit" className="bg-blue-500 text-white p-2">
+          <button type="submit" className="dark-btn">
             Save
           </button>
         </form>

@@ -149,7 +149,7 @@ const AddBatchStudent = () => {
                       className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
                       onClick={() => handleStudentSelect(student)}
                     >
-                      {student.name} ({student.email})
+                      {student.name} ({student.fatherName})
                     </li>
                   ))}
                 </ul>

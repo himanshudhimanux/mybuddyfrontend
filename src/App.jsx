@@ -13,9 +13,9 @@ import TeacherList from './pages/teacher/TeacherList';
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './routes/Unauthorized';
 import InstituteList from './pages/institute/InstituteList';
-import AddInstitute from './pages/institute/AddInstitute'
-import AddAttendance from './pages/attendance/AddAttendance'
-import AttendanceList from './pages/attendance/AttendanceList'
+import AddInstitute from './pages/institute/AddInstitute';
+import AddAttendance from './pages/attendance/AddAttendance';
+import AttendanceList from './pages/attendance/AttendanceList';
 import AddCourse from './pages/courses/AddCourse';
 import CoursesList from './pages/courses/CoursesList';
 import AddLocation from './pages/locations/AddLocation';
@@ -30,7 +30,10 @@ import AddBatchStudent from './pages/batchStudent/AddBatchStudent'
 import BatchStudentsList from './pages/batchStudent/BatchStudentsList';
 import AddSubject from './pages/subjects/AddSubject';
 import SubjectsList from './pages/subjects/SubjectsList';
-import UpdateClassSession from './pages/classSession/UpdateClassSession'
+import EditSessionList from './pages/classSession/EditClassSession'
+import ClassSessionCalendar from './pages/classSession/ClassSessionCalendar';
+import EditStudent from './pages/student/EditStudent';
+import StudentDetailPage from './pages/student/StudentDetailPage'
 
 
 function App() {
@@ -79,6 +82,23 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/edit-student/:id"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <EditStudent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/view-student/:id"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <StudentDetailPage />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="/teachers/add"
               element={
@@ -253,11 +273,13 @@ function App() {
               
             />
 
+            <Route path="/class-session/calendar" element={<ClassSessionCalendar />} />
+
             <Route
-              path="/class-session/update"
+              path="/class-session/update/:id"
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
-                  <UpdateClassSession />
+                  <EditSessionList />
                 </ProtectedRoute>
               }
               

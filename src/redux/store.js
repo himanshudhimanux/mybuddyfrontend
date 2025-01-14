@@ -12,7 +12,9 @@ import locationReducer from '../redux/features/location/locationSlice';
 import batchReducer from '../redux/features/batch/batchSlice'
 import sessionYearReducer from '../redux/features/sessionYear/sessionYearSlice'
 import batchStudentReducer from '../redux/features/batchStudent/batchStudentSlice'
-import classSessionReducer from '../redux/features/classSession/classSessionSlice'
+import classSessionReducer from '../redux/features/classSession/classSessionSlice';
+import attendanceReducer from '../redux/features/attendance/attendanceSlice'
+import sessionApi from "./features/classSession/sessionApiSlice";
 
 
 
@@ -32,7 +34,9 @@ const rootReducer = combineReducers({
   locations: locationReducer,
   batches: batchReducer,
   batchStudent:batchStudentReducer,
-  classSession: classSessionReducer
+  classSession: classSessionReducer,
+  attendance: attendanceReducer,
+  [sessionApi.reducerPath]: sessionApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -44,7 +48,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
       },
-    }),
+    }).concat(sessionApi.middleware),
 });
 
 export const persistor = persistStore(store);
